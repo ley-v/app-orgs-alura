@@ -1,11 +1,11 @@
 package alura.orgs.ui.activity
 
 import alura.orgs.R
+import alura.orgs.dao.ProdutoDao
 import alura.orgs.model.Produto
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import java.math.BigDecimal
@@ -14,6 +14,7 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val dao = ProdutoDao()
         val botaoSalvar = findViewById<Button>(R.id.botao_salvar)
         val campoNome = findViewById<EditText>(R.id.nome)
         val campoDescricao = findViewById<EditText>(R.id.descricao)
@@ -25,9 +26,13 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
             val valor = if (valorEmTexto.isBlank()) BigDecimal.ZERO
             else BigDecimal(valorEmTexto)
 
-            val produto = Produto(nome, descricao, valor)
+            val produtoNovo = Produto(nome, descricao, valor)
 
-            Log.i("produtoX", "onCreate: $produto")
+            dao.adiciona(produtoNovo)
+            Log.i("FormularioProdutoAdd", "onCreate: $produtoNovo")
+            Log.i("FormularioProdutoArray", "onCreate: ${dao.buscaTodosOsProdutos()}")
+
+            finish()
         }
     }
 }
