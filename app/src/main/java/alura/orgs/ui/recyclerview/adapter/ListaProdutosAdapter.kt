@@ -1,43 +1,50 @@
 package alura.orgs.ui.recyclerview.adapter
 
-import alura.orgs.R
+import alura.orgs.databinding.ProdutoItemBinding
 import alura.orgs.model.Produto
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class ListaProdutosAdapter(
     val context: Context,
-    private val produtos: List<Produto>
+    produtos: List<Produto>
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolderL>() {
 
-    class ViewHolderL(view: View) : RecyclerView.ViewHolder(view) {
+    private val dataset = produtos.toMutableList()
+
+    class ViewHolderL(private val binding: ProdutoItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun vincula(produto: Produto) {
-            val nome = itemView.findViewById<TextView>(R.id.nome)
+            val nome = binding.produtoItemNome
             nome.text = produto.nome
-            val descricao = itemView.findViewById<TextView>(R.id.descricao)
+            val descricao = binding.produtoItemDescricao
             descricao.text = produto.descricao
-            val valor = itemView.findViewById<TextView>(R.id.valor)
+            val valor = binding.produtoItemValor
             valor.text = produto.valor.toPlainString()
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolderL {
         val inflador = LayoutInflater.from(context)
-        val viewL: View = inflador.inflate(R.layout.produto_item, parent, false)
-        return ViewHolderL(viewL)
+        val binding = ProdutoItemBinding.inflate(inflador, parent, false)
+        return ViewHolderL(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolderL, position: Int) {
-        val produto = produtos[position]
+        val produto = dataset[position]
         holder.vincula(produto)
 
     }
 
-    override fun getItemCount(): Int = produtos.size
+    override fun getItemCount(): Int = dataset.size
+
+    fun atualiza(produtos: List<Produto>) {
+        this.dataset.clear()
+        this.dataset.addAll(produtos)
+        notifyDataSetChanged()
+
+    }
 }
 
 
